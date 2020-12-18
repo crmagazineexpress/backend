@@ -33,8 +33,15 @@ export class CustomerController {
         @Res() res: Response
     ): Promise<void> {
         try {
-            this.model.create(customerData as iCustomer)
-            res.status(HttpStatus.CREATED).send()
+            // console.log(customerData._id)
+            if (customerData._id) {
+                const customer = await this.model.findById(customerData._id)
+                await customer.update(customerData).exec()
+                res.status(HttpStatus.OK).send()
+            } else {
+                this.model.create(customerData as iCustomer)
+                res.status(HttpStatus.CREATED).send()
+            }
         } catch (error) {
             res.status(HttpStatus.BAD_REQUEST).json(error)
         }
