@@ -22,5 +22,6 @@ module.exports = {
         'node/no-exports-assign': 'off',
         'node/no-new-require': 'off',
         'no-useless-constructor': 'off',
+        camelcase: 'off',
     },
 }
