@@ -4,10 +4,12 @@ import { iOrder } from 'src/repositories/order'
 import {
     Body,
     Controller,
+    Delete,
     Get,
     HttpStatus,
     Inject,
     Injectable,
+    Param,
     Post,
     Res,
 } from '@nestjs/common'
@@ -38,5 +40,15 @@ export class OrderController {
             const { _id } = await this.model.create(order as iOrder)
             res.status(HttpStatus.CREATED).json(_id)
         }
+    }
+
+    @Delete(':id')
+    async delete(
+        @Param('id') _id: string,
+        @Res() res: Response
+    ): Promise<void> {
+        const { deletedCount } = await this.model.deleteOne({ _id })
+        if (deletedCount === 1) res.status(HttpStatus.OK).send()
+        else res.status(HttpStatus.BAD_REQUEST).send()
     }
 }
