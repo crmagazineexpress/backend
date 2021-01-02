@@ -31,7 +31,10 @@ export class OrderController {
     async findAllPromissoryNotes(@Res() res: Response): Promise<void> {
         try {
             const list = await this.model
-                .find({ payment_method: 'ticket' })
+                .find({
+                    payment_method: 'ticket',
+                    createOrderAt: { $ne: null },
+                })
                 .populate('customer')
 
             if (list.length > 0) res.status(HttpStatus.OK).json(list)
