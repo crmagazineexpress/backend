@@ -27,6 +27,20 @@ export class OrderController {
         return await this.model.find().populate('customer')
     }
 
+    @Get('/promissory-note')
+    async findAllPromissoryNotes(@Res() res: Response): Promise<void> {
+        try {
+            const list = await this.model
+                .find({ payment_method: 'ticket' })
+                .populate('customer')
+
+            if (list.length > 0) res.status(HttpStatus.OK).json(list)
+            else throw new Error('Nenhum registro encontrado!')
+        } catch (error) {
+            res.status(HttpStatus.NOT_FOUND).json(error)
+        }
+    }
+
     @Post()
     async save(
         @Body() order: Partial<iOrder>,
