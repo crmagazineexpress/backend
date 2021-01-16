@@ -5,7 +5,7 @@ export const dbConnection: Provider[] = [
     {
         provide: 'MONGO_CONNECTION',
         useFactory(): Promise<typeof Mongoose> {
-            return Mongoose.connect('mongodb://mongo/crmanage', {
+            return Mongoose.connect('mongodb://localhost:27017/crmanage', {
                 useCreateIndex: true,
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
