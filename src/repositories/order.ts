@@ -47,6 +47,7 @@ export interface iOrder extends Document {
         number_instalments: number
         total_value_installmented: number
         installments: Installment[]
+        status?: string
     }
     payment_method: string
     products: Product[]

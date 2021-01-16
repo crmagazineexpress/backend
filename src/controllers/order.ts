@@ -27,6 +27,22 @@ export class OrderController {
         return await this.model.find().populate('customer')
     }
 
+    calculateStatus(list: iOrder[]): iOrder[] {
+        list = JSON.parse(JSON.stringify(list))
+        for (const i in list) {
+            const { installments } = list[i].installments_options
+
+            const lastOpened = installments.find(({ paid }) => !paid)
+
+            if (!lastOpened) list[i].installments_options.status = 'settled'
+            else if (new Date(`${lastOpened.date}T00:00:00`) > new Date())
+                list[i].installments_options.status = 'ok'
+            else list[i].installments_options.status = 'late'
+        }
+
+        return list
+    }
+
     @Get('/promissory-note')
     async findAllPromissoryNotes(@Res() res: Response): Promise<void> {
         try {
@@ -37,7 +53,9 @@ export class OrderController {
                 })
                 .populate('customer')
 
-            if (list.length > 0) res.status(HttpStatus.OK).json(list)
+            const processedStatus = this.calculateStatus(list)
+            if (processedStatus.length > 0)
+                res.status(HttpStatus.OK).json(processedStatus)
             else throw new Error('Nenhum registro encontrado!')
         } catch (error) {
             res.status(HttpStatus.NOT_FOUND).json(error)
